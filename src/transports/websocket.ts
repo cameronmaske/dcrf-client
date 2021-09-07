@@ -2,11 +2,9 @@ import {EventEmitter} from 'events';
 import ReconnectingWebsocket, { Event } from 'reconnecting-websocket';
 import autobind from 'autobind-decorator';
 
-import { getLogger } from '../logging';
 import {ITransport} from '../interface';
 
 
-const log = getLogger('dcrf.transports.websocket');
 
 
 /**
@@ -35,11 +33,11 @@ class WebsocketTransport extends EventEmitter implements ITransport {
   @autobind
   public connect() {
     if (this.socket != null) {
-      log.debug('Attempt to connect already-connected socket ignored (%s)', this.url);
+      console.log('Attempt to connect already-connected socket ignored (%s)', this.url);
       return false;
     }
 
-    log.info('Connecting to websocket at %s', this.url);
+    console.log('Connecting to websocket at %s', this.url);
     this.socket = new ReconnectingWebsocket(this.url, [], this.options);
 
     this.socket.addEventListener('message', this.handleMessage);

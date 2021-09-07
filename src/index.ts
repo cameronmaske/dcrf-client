@@ -1,7 +1,6 @@
 import autobind from 'autobind-decorator';
 import uniqBy from 'lodash.uniqby';
 
-import {getLogger} from './logging';
 import FifoDispatcher from './dispatchers/fifo';
 
 import {
@@ -25,7 +24,6 @@ import {SubscriptionPromise} from './subscriptions';
 import WebsocketTransport from './transports/websocket';
 
 
-const log = getLogger('dcrf');
 
 
 interface ISubscriptionDescriptor<S, P extends S> {
@@ -237,10 +235,10 @@ class DCRFClient implements IStreamingAPI {
     });
 
     const listenerIds = Object.keys(this.subscriptions).map(parseInt);
-    log.info('Removing %d listeners', listenerIds.length);
+    console.log('Removing %d listeners', listenerIds.length);
     listenerIds.forEach(listenerId => this._unsubscribeUnsafe(listenerId));
 
-    log.info('Sending %d unsubscription requests', unsubscribeMessages.length);
+    console.log('Sending %d unsubscription requests', unsubscribeMessages.length);
     const unsubscriptionPromises = [];
     for (const {unsubscribeMessage} of unsubscribeMessages) {
       const {stream, payload: {request_id, ...payload}}: any = unsubscribeMessage;
@@ -259,7 +257,7 @@ class DCRFClient implements IStreamingAPI {
       return s.subscribeMessage?.payload?.request_id
     });
 
-    log.info('Resending %d subscription requests', subscriptions.length);
+    console.log('Resending %d subscription requests', subscriptions.length);
 
     for (const {subscribeMessage} of resubscribeMessages) {
       this.sendNow(subscribeMessage);
@@ -328,7 +326,7 @@ class DCRFClient implements IStreamingAPI {
 
   @autobind
   protected handleTransportMessage(event: IMessageEvent) {
-    log.debug('Received message over transport: %s', event.data);
+    console.log('Received message over transport: %s', event.data);
     const data = this.serializer.deserialize(event.data);
     return this.handleMessage(data);
   }
@@ -339,13 +337,13 @@ class DCRFClient implements IStreamingAPI {
 
   @autobind
   protected handleTransportConnect() {
-    log.debug('Initial API connection over transport %s', this.transport.constructor.name);
+    console.log('Initial API connection over transport %s', this.transport.constructor.name);
     this.queue.processQueue();
   }
 
   @autobind
   protected handleTransportReconnect() {
-    log.debug('Reestablished API connection');
+    console.log('Reestablished API connection');
     this.resubscribe();
     this.queue.processQueue();
   }

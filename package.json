@@ -65,7 +65,6 @@
     "lodash.ismatch": "^4.4.0",
     "lodash.pull": "^4.1.0",
     "reconnecting-websocket": "^4.4.0",
-    "lodash.uniqby": "^4.7.0",
-    "winston": "^3.3.3"
+    "lodash.uniqby": "^4.7.0"
   }
 }
